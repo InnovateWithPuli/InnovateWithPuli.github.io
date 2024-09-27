@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Researcher Hub</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Research Hub</h1>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showTab('cfps')">Upcoming Call for Papers</a></li>
+                <li><a href="#" onclick="showTab('reviewing')">Reviewing Opportunities</a></li>
+                <li><a href="#" onclick="showTab('request-review')">Request a Review</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="cfps-tab" class="tab">
+        <h2>Upcoming Calls for Papers</h2>
+        <div id="cfp-content">Loading...</div>
+    </section>
+
+    <section id="reviewing-tab" class="tab" style="display:none;">
+        <h2>Reviewing Opportunities</h2>
+        <div id="reviewing-content">Loading...</div>
+    </section>
+
+    <section id="request-review-tab" class="tab" style="display:none;">
+        <h2>Request a Review</h2>
+        <p>Contact me on <a href="https://www.linkedin.com/in/YOUR-LINKEDIN" target="_blank">LinkedIn</a> to request a review or collaboration. This website helps researchers by providing a centralized hub for academic opportunities.</p>
+    </section>
+
+    <script>
+        // Switch between tabs
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.style.display = 'none');
+
+            document.getElementById(tabName + '-tab').style.display = 'block';
+
+            if (tabName === 'cfps') {
+                fetchCfps();
+            } else if (tabName === 'reviewing') {
+                fetchReviewing();
+            }
+        }
+
+        // Fetch Calls for Papers
+        function fetchCfps() {
+            fetch('/api/cfps')
+                .then(response => response.json())
+                .then(data => {
+                    const cfpContent = document.getElementById('cfp-content');
+                    cfpContent.innerHTML = '';
+                    data.forEach(cfp => {
+                        const item = document.createElement('div');
+                        item.innerHTML = `<strong>${cfp.title}</strong> - Deadline: ${cfp.deadline} <a href="${cfp.link}" target="_blank">More Info</a>`;
+                        cfpContent.appendChild(item);
+                    });
+                });
+        }
+
+        // Fetch Reviewing Opportunities
+        function fetchReviewing() {
+            fetch('/api/reviewing')
+                .then(response => response.json())
+                .then(data => {
+                    const reviewingContent = document.getElementById('reviewing-content');
+                    reviewingContent.innerHTML = '';
+                    data.forEach(review => {
+                        const item = document.createElement('div');
+                        item.innerHTML = `<strong>${review.title}</strong> <a href="${review.link}" target="_blank">More Info</a>`;
+                        reviewingContent.appendChild(item);
+                    });
+                });
+        }
+    </script>
+
+</body>
+</html>
